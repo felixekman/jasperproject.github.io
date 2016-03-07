@@ -7,14 +7,41 @@ currentpage: usage
 Using Jasper
 ===
 
+<h2 class="linked" id='starting-jasper'><a href="#starting-jasper" title="Permalink to this headline">Starting Jasper</a></h2>
 
-<h2 class="linked" id='selecting-network'><a href="#selecting-network" title="Permalink to this headline">Selecting a wireless network</a></h2>
+After <a href="/documentation/configuration/">configuring Jasper</a>, you can start Jasper by typing:
+{% highlight bash %}
+/home/pi/jasper/jasper.py
+{% endhighlight %}
 
-When you turn on Jasper for the first time, it will ask you to configure a new wireless network connection. From your laptop, connect to the temporary "Jasper" network that will appear after a few minutes.
+You can also start Jasper automatically on each reboot. To do that, run `crontab -e`, then add the following line, if it's not there already:
 
-After connecting to Jasper's temporary network, browse to [192.168.1.1:8000/cgi-bin/index.cgi](http://192.168.1.1:8000/cgi-bin/index.cgi) and follow the on-screen instructions. When complete, your Jasper will restart and connect to your selected wireless network automatically.
+{% highlight bash %}
+@reboot /home/pi/jasper/jasper.py;
+{% endhighlight %}
 
-To change the wireless network in the future, just turn on your Jasper without the wifi adapter, wait a few minutes, then restart Jasper with the wifi adapter plugged in. Jasper will again ask you to select a wireless network and you can just follow the steps outlined above.
+Restart your Raspberry Pi.
+
+<h2 class="linked" id='selecting-network'><a href="#selecting-network" title="Permalink to this headline">Selecting a network</a></h2>
+
+When you turn on Jasper for the first time, it will ask you to configure a new network connection. You have two options for connecting to a network: (1) ethernet, and (2) wireless.
+
+(1) To configure an ethernet connection, simply attach your Raspberry Pi to the wired network with an ethernet cable. If network access is provided through another computer, you may need to configure that host to route network traffic through the ethernet cable. Instructions for how to do this on OS X can be found [here](http://edmundofuentes.com/post/45179343394/raspberry-pi-without-keyboard-mouse-nor-screen).
+
+(2) To configure a wireless connection, overwrite `/etc/network/interfaces` file on your Raspberry Pi with the following code. Slightly different configuration options may be required for different types of wireless networks.
+
+{% highlight bash %}
+auto lo
+
+iface lo inet loopback
+iface eth0 inet dhcp
+
+allow-hotplug wlan0
+auto wlan0
+iface wlan0 inet dhcp
+        wpa-ssid "YOUR_NETWORK_SSID"
+        wpa-psk "YOUR_NETWORK_PASSWORD"
+{% endhighlight %}
 
 <h2 class="linked" id='interacting'><a href="#interacting" title="Permalink to this headline">Interacting with Jasper</a></h2>
 
@@ -47,7 +74,7 @@ To learn how to write your own module, check out the [Developer API documentatio
 
 <h2 class="linked" id='spotify-mode'><a href="#spotify-mode" title="Permalink to this headline">Spotify Mode</a></h2>
 
-If you've [configured Spotify](/documentation/software/#spotify-integration), Jasper will enter Spotify mode with the "Music" or "Spotify" command. Here's a list of example commands you can issue while in Spotify mode:
+If you've [configured Spotify](/documentation/configuration/#spotify-integration), Jasper will enter Spotify mode with the "Music" or "Spotify" command. Here's a list of example commands you can issue while in Spotify mode:
 
 - "Play Hipster Playlist": plays playlist titled "Hipster" from your Spotify library
 - "Play": plays currently playing song
